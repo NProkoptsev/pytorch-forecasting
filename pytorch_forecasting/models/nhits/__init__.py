@@ -492,7 +492,7 @@ class NHiTS(BaseModelWithCovariates):
 
         # plot blocks
         for pooling_size, block_backcast, block_forecast in zip(
-            self.hparams.pooling_sizes, output["block_backcasts"], block_forecasts
+            self.hparams.pooling_sizes, output["block_backcasts"][1:], block_forecasts
         ):
             color = next(prop_cycle)["color"]
             ax[1].plot(
