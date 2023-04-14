@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import math
 
 
 class StaticFeaturesEncoder(nn.Module):
@@ -289,7 +290,7 @@ class NHiTS(nn.Module):
                 if shared_weights and block_id > 0:
                     nbeats_block = block_list[-1]
                 else:
-                    n_theta = max(prediction_length // downsample_frequencies[i], 1)
+                    n_theta = max(math.ceil(prediction_length / downsample_frequencies[i]), 1)
                     basis = IdentityBasis(
                         backcast_size=context_length,
                         forecast_size=prediction_length,
