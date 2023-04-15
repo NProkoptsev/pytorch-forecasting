@@ -489,23 +489,27 @@ class NHiTS(BaseModelWithCovariates):
             label="Forecast",
             c=color,
         )
-
+        cur_idx = 1 if self.hparams.naive_level else 0
         # plot blocks
-        for pooling_size, block_backcast, block_forecast in zip(
-            self.hparams.pooling_sizes, output["block_backcasts"][1:], block_forecasts
+        for pooling_size, block_size in zip(
+            self.hparams.pooling_sizes, self.hparams.n_blocks
         ):
+            blocks_idx = np.arange(cur_idx, cur_idx + block_size)
+            block_bc = np.stack([output["block_backcasts"][i][idx][..., 0].detach().cpu() for i in blocks_idx],0).sum(0)
+            block_fc = np.stack([block_forecast[i] for i in blocks_idx],0).sum(0)
             color = next(prop_cycle)["color"]
             ax[1].plot(
                 torch.arange(-self.hparams.context_length, 0),
-                block_backcast[idx][..., 0].detach().cpu(),
+                block_bc,
                 c=color,
             )
             ax[1].plot(
                 torch.arange(self.hparams.prediction_length),
-                block_forecast,
+                block_fc,
                 c=color,
                 label=f"Pooling size: {pooling_size}",
             )
+            cur_idx += block_size
         ax[1].set_xlabel("Time")
 
         fig.legend()
