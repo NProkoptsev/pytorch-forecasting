@@ -496,7 +496,7 @@ class NHiTS(BaseModelWithCovariates):
         ):
             blocks_idx = np.arange(cur_idx, cur_idx + block_size)
             block_bc = np.stack([output["block_backcasts"][i][idx][..., 0].detach().cpu() for i in blocks_idx],0).sum(0)
-            block_fc = np.stack([block_forecast[i] for i in blocks_idx],0).sum(0)
+            block_fc = np.stack([block_forecasts[i] for i in blocks_idx],0).sum(0)
             color = next(prop_cycle)["color"]
             ax[1].plot(
                 torch.arange(-self.hparams.context_length, 0),
