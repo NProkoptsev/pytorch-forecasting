@@ -241,15 +241,21 @@ class NHiTS(BaseModelWithCovariates):
         # covariates
         if self.covariate_size > 0:
             encoder_features = self.extract_features(x, self.embeddings, period="encoder")
-            encoder_x_t = torch.concat(
-                [encoder_features[name] for name in self.encoder_variables if name not in self.target_names],
-                dim=2,
-            )
+            encoder_feature_list = [encoder_features[name] for name in self.encoder_variables if name not in self.target_names]
+            if len(encoder_feature_list) > 0:
+                encoder_x_t = torch.concat(
+                    encoder_feature_list,
+                    dim=2,
+                )
+            else:
+                encoder_x_t = None
+
             decoder_features = self.extract_features(x, self.embeddings, period="decoder")
-            decoder_x_t = torch.concat([decoder_features[name] for name in self.decoder_variables], dim=2)
-        else:
-            encoder_x_t = None
-            decoder_x_t = None
+            decoder_feature_list = [decoder_features[name] for name in self.decoder_variables]
+            if len(decoder_feature_list) > 0:
+                decoder_x_t = torch.concat(decoder_feature_list, dim=2)
+            else:
+                decoder_x_t = None
 
         # statics
         if self.static_size > 0:
