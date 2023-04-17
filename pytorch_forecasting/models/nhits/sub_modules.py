@@ -125,9 +125,10 @@ class NHiTSBlock(nn.Module):
         self.batch_normalization = batch_normalization
         self.dropout = dropout
 
+        ##TODO: fix this
         self.hidden_size = [
             self.context_length_pooled * len(self.output_size)
-            + (self.context_length + self.prediction_length) * self.covariate_size
+            + (self.context_length) * self.covariate_size
             + self.static_hidden_size
         ] + hidden_size
 
