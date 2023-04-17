@@ -175,14 +175,12 @@ class NHiTSBlock(nn.Module):
         encoder_y = encoder_y.transpose(1, 2).reshape(batch_size, -1)
 
         if self.covariate_size > 0:
-            encoder_y = torch.cat(
-                (
-                    encoder_y,
-                    encoder_x_t.reshape(batch_size, -1),
-                    decoder_x_t.reshape(batch_size, -1),
-                ),
-                1,
-            )
+            to_concat = [encoder_y]
+            if encoder_x_t is not None:
+                to_concat.append(encoder_x_t.reshape(batch_size, -1))
+            if decoder_x_t is not None:
+                to_concat.append(decoder_x_t.reshape(batch_size, -1))
+            encoder_y = torch.cat(to_concat,1)
 
         # Static exogenous
         if (self.static_size > 0) and (self.static_hidden_size > 0):
