@@ -203,7 +203,7 @@ class NHiTS(BaseModelWithCovariates):
         Returns:
             int: size of time-dependent covariates
         """
-        return len(set(self.hparams.time_varying_reals_decoder) - set(self.target_names)) + sum(
+        return len(set(self.hparams.time_varying_reals_decoder) + set(self.hparams.time_varying_reals_encoder) - set(self.target_names)) + sum(
             self.embeddings.output_size[name] for name in self.hparams.time_varying_categoricals_encoder
         )
 
